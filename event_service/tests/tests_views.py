@@ -56,3 +56,29 @@ class EventViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.event.name)
+
+    def test_booking_requires_login(self):
+        url = reverse("events:booking-create", args=[self.event.pk])
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login/", response.url)
+
+    def test_booking_create_success(self):
+        self.client.login(username="user", password="pass1234")
+
+        url = reverse("events:booking-create", args=[self.event.pk])
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Booking.objects.count(), 1)
+
+    def test_booking_duplicate_not_allowed(self):
+        self.client.login(username="user", password="pass1234")
+
+        Booking.objects.create(user=self.participant, event=self.event)
+
+        url = reverse("events:booking-create", args=[self.event.pk])
+        self.client.post(url)
+
+        self.assertEqual(Booking.objects.count(), 1)
