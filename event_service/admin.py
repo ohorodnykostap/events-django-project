@@ -5,7 +5,8 @@ from .models import User, Location, EventType, Event, Booking
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ("username", "email", "first_name", "last_name", "role", "is_staff")
+    list_display = (
+        "username", "email", "first_name", "last_name", "role", "is_staff")
     list_filter = ("role", "is_staff", "is_superuser", "is_active")
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("username",)
@@ -13,7 +14,8 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         ("Personal info", {"fields": ("first_name", "last_name", "email")}),
-        ("Role & permissions", {"fields": ("role", "is_active", "is_staff", "is_superuser")}),
+        ("Role & permissions",
+            {"fields": ("role", "is_active", "is_staff", "is_superuser")}),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
 
@@ -32,7 +34,13 @@ class EventTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("name", "event_datetime", "organizer", "location", "event_type", "status")
+    list_display = (
+        "name",
+        "event_datetime",
+        "organizer",
+        "location",
+        "event_type",
+        "status")
     list_filter = ("status", "event_type", "location")
     search_fields = ("name", "description", "organizer__username")
     ordering = ("event_datetime",)
