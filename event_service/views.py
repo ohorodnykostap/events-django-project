@@ -51,14 +51,6 @@ class RegisterView(CreateView):
     template_name = "registration/register.html"
     success_url = reverse_lazy("login")
 
-@login_required
-def booking_create(request, pk):
-    event = get_object_or_404(Event, pk=pk)
-    if request.method == "POST":
-        Booking.objects.create(user=request.user, event=event)
-        return redirect("events:event-detail", pk=pk)
-    return render(request, "event_service/booking_form.html", {"event": event})
-
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = "event_service/profile.html"
@@ -88,16 +80,6 @@ class ProfileView(LoginRequiredMixin, TemplateView):
             messages.error(request, "There was a problem updating your profile.")
         return redirect("events:profile")
 
-
-class EventCreateView(LoginRequiredMixin, CreateView):
-    model = Event
-    form_class = EventForm
-    template_name = "event_service/event_form.html"
-    success_url = reverse_lazy("events:profile")
-
-    def form_valid(self, form):
-        form.instance.organizer = self.request.user
-        return super().form_valid(form)
 
 class EventUpdateView(LoginRequiredMixin, UpdateView):
     model = Event
