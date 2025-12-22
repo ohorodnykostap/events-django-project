@@ -29,3 +29,9 @@ class FormsTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("first_name", form.errors)
 
+    def test_user_change_form_valid(self):
+        user = User.objects.create_user(username="u", password="pass", email="a@b.com")
+        form = CustomUserChangeForm(data={"first_name": "New", "last_name": "Name", "email": "new@example.com"}, instance=user)
+        self.assertTrue(form.is_valid())
+
+
