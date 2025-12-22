@@ -34,4 +34,38 @@ class FormsTests(TestCase):
         form = CustomUserChangeForm(data={"first_name": "New", "last_name": "Name", "email": "new@example.com"}, instance=user)
         self.assertTrue(form.is_valid())
 
+    def test_event_form_valid_future_date(self):
+        future_datetime = timezone.now() + timezone.timedelta(days=5)
+        data = {
+            "name": "Test Event",
+            "description": "Desc",
+            "event_type": self.event_type.id,
+            "location": self.location.id,
+            "event_datetime": future_datetime,
+            "price": 100,
+            "capacity": 20,
+        }
+        form = EventForm(data)
+        self.assertTrue(form.is_valid())
+
+    def test_event_form_invalid_past_date(self):
+        past_datetime = timezone.now() - timezone.timedelta(days=5)
+        data = {
+            "name": "Past Event",
+            "description": "Desc",
+            "event_type": self.event_type.id,
+            "location": self.location.id,
+            "event_datetime": past_datetime,
+            "price": 100,
+            "capacity": 20,
+        }
+        form = EventForm(data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("event_datetime", form.errors)
+        self.assertEqual(
+            form.errors["event_datetime"],
+            ["You cannot create or edit an event in the past."]
+        )
+
+
 
