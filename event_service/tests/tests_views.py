@@ -42,3 +42,17 @@ class EventViewsTestCase(TestCase):
             event_type=self.event_type,
             location=self.location
         )
+
+    def test_event_list_view(self):
+        url = reverse("events:event-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.event.name)
+
+    def test_event_detail_view(self):
+        url = reverse("events:event-detail", args=[self.event.pk])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.event.name)
