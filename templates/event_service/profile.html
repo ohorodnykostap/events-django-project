@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>My Profile</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+</form>
+
+<hr>
+
+{% load tz %}
+
+{% if user.role == "organizer" and organized_events %}
+    <h3>My Organized Events</h3>
+    <ul class="list-group mb-3">
+        {% for event in organized_events|dictsort:"event_datetime" %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ event.name }} ({{ event.event_datetime|date:"Y-m-d H:i" }}) -
+                Total seats: {{ event.capacity }},
+                Available: {{ event.available_seats }}
+                <a href="{% url 'events:event-update' event.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% elif user.role == "organizer" %}
+    <p>You have no organized events.</p>
+{% endif %}
+
+<h3>My Booked Events</h3>
+{% if booked_events %}
+    <ul class="list-group mb-3">
+        {% for booking in booked_events|dictsort:"event.event_datetime" %}
+            {% with booking.event.event_datetime as event_time %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ booking.event.name }} ({{ event_time|date:"Y-m-d H:i" }}) -
+                Total seats: {{ booking.event.capacity }},
+                Available: {{ booking.event.available_seats }}
+                {% if event_time > now %}
+                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal{{ booking.pk }}">
+                        Cancel
+                    </button>
+
+                    <div class="modal fade" id="confirmCancelModal{{ booking.pk }}" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Confirm Cancellation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            Are you sure you want to cancel booking for '{{ booking.event.name }}'?
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{% url 'events:booking-delete' booking.pk %}" class="btn btn-danger">Yes, Cancel</a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                {% else %}
+                    <span class="text-muted">Event Passed</span>
+                {% endif %}
+            </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no booked events.</p>
+{% endif %}
+
+{% endblock %}
+
