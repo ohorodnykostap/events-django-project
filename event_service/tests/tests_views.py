@@ -82,3 +82,27 @@ class EventViewsTestCase(TestCase):
         self.client.post(url)
 
         self.assertEqual(Booking.objects.count(), 1)
+
+    def test_event_create_requires_login(self):
+        url = reverse("events:event-create")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_event_create_by_logged_user(self):
+        self.client.login(username="org", password="pass1234")
+
+        url = reverse("events:event-create")
+        data = {
+            "name": "New Event",
+            "description": "Desc",
+            "event_datetime": timezone.now() + timezone.timedelta(days=20),
+            "price": 200,
+            "capacity": 50,
+            "event_type": self.event_type.id,
+            "location": self.location.id,
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Event.objects.filter(name="New Event").exists())
