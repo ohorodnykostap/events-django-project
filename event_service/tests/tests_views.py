@@ -43,6 +43,29 @@ class EventViewsTestCase(TestCase):
             location=self.location
         )
 
+    def test_event_create_with_past_date_fails(self):
+        self.client.login(username="org", password="pass1234")
+
+        url = reverse("events:event-create")
+        past_date = timezone.now() - timezone.timedelta(days=5)
+        data = {
+            "name": "Past Event",
+            "description": "This event is in the past",
+            "event_datetime": past_date,
+            "price": 100,
+            "capacity": 30,
+            "event_type": self.event_type.id,
+            "location": self.location.id,
+        }
+
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response, "form", "event_datetime", "You cannot create or edit an event in the past."
+        )
+        self.assertFalse(Event.objects.filter(name="Past Event").exists())
+
     def test_event_list_view(self):
         url = reverse("events:event-list")
         response = self.client.get(url)
