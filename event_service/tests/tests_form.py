@@ -18,3 +18,14 @@ class FormsTests(TestCase):
         self.event_type = EventType.objects.create(name="Concert")
         self.location = Location.objects.create(name="Arena", address="Lviv")
 
+    def test_user_creation_form_valid(self):
+        form = CustomUserCreationForm(data=self.user_data)
+        self.assertTrue(form.is_valid())
+
+    def test_user_creation_form_missing_first_name(self):
+        data = self.user_data.copy()
+        data.pop("first_name")
+        form = CustomUserCreationForm(data=data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("first_name", form.errors)
+
