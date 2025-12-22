@@ -7,4 +7,6 @@ select = B,C,E,F,W,T4,B9,Q0,N8,VNE
 exclude =
     **migrations
     venv
-    tests
+    event_service/management/commands/import_initial_data.py
+per-file-ignores =
+    config/settings.py: E501,E123
