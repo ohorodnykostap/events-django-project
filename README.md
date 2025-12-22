@@ -41,15 +41,20 @@ Initial Data
 
 The initial_data folder contains CSV files with initial data for the database.
 To populate the database, use the custom management command:
+
   python manage.py import_initial_data
+  
 This will read the CSV files and create the necessary records for EventType, Location, User, etc.
 
 Running the Development Server
+
 python manage.py runserver
+
 Access the app at http://127.0.0.1:8000/
 
 Tests
 Run all tests:
+
 python manage.py test
 
 Code Style
