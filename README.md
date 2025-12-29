@@ -37,6 +37,11 @@ This is a Django-based web application for managing events, bookings, and users.
 4. Apply migrations:
    python manage.py migrate
 
+## About
+
+This is a Django-based web application for managing events, bookings, and users.  
+You can visit the live website here: [https://events-django-project.onrender.com](https://events-django-project.onrender.com/
+
 Initial Data
 
 The initial_data folder contains CSV files with initial data for the database.
