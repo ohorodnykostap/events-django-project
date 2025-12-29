@@ -40,7 +40,7 @@ This is a Django-based web application for managing events, bookings, and users.
 ## About
 
 This is a Django-based web application for managing events, bookings, and users.  
-You can visit the live website here: [https://events-django-project.onrender.com](https://events-django-project.onrender.com/
+You can visit the live website here: [https://events-django-project.onrender.com](https://events-django-project.onrender.com/)
 
 Initial Data
 
