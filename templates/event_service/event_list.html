@@ -1,16 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% include "event_service/event_filter.html" %}
+
 <div class="row">
     {% for event in events %}
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             <div class="card-body">
                 <h5 class="card-title">{{ event.name }}</h5>
-                <p class="card-text">{{ event.event_type.name }} | {{ event.location.name }}</p>
-                <p class="card-text">Date: {{ event.event_datetime|date:"Y-m-d H:i" }}</p>
-                <p class="card-text">Price: ${{ event.price }}</p>
-                <a href="{% url 'events:event-detail' event.pk %}" class="btn btn-primary">View</a>
+                <p class="card-text">
+                    {{ event.event_type.name }} | {{ event.location.name }}
+                </p>
+                <p class="card-text">
+                    Date: {{ event.event_datetime|date:"Y-m-d H:i" }}
+                </p>
+                <p class="card-text">
+                    Price: ${{ event.price }}
+                </p>
+                <a href="{% url 'events:event-detail' event.pk %}"
+                   class="btn btn-primary">View</a>
             </div>
         </div>
     </div>
@@ -20,5 +30,5 @@
 </div>
 
 {% include "includes/pagination.html" %}
-{% endblock %}
 
+{% endblock %}

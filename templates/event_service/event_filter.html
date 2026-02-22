@@ -1,0 +1,55 @@
+<div class="bg-light py-3 mb-4 rounded">
+  <div class="container-fluid">
+    <form method="get" class="row g-2 align-items-center">
+
+      <!-- Search -->
+      <div class="col-12 col-md-4">
+        <input
+          type="text"
+          name="q"
+          value="{{ request.GET.q }}"
+          class="form-control"
+          placeholder="Search by event name"
+        >
+      </div>
+
+      <!-- Event Type -->
+      <div class="col-12 col-md-3">
+        <select name="event_type" class="form-select">
+          <option value="">All Types</option>
+          {% for type in event_types %}
+            <option
+              value="{{ type.id }}"
+              {% if request.GET.event_type == type.id|stringformat:"s" %}selected{% endif %}
+            >
+              {{ type.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Location -->
+      <div class="col-12 col-md-3">
+        <select name="location" class="form-select">
+          <option value="">All Locations</option>
+          {% for loc in locations %}
+            <option
+              value="{{ loc.id }}"
+              {% if request.GET.location == loc.id|stringformat:"s" %}selected{% endif %}
+            >
+              {{ loc.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Submit -->
+      <div class="col-12 col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+          Filter
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
