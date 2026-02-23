@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="mb-4 text-center">My Profile</h2>
+
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post" class="mb-3">
+            {% csrf_token %}
+            <div class="mb-3 d-flex align-items-center">
+              <label for="id_first_name" class="form-label col-3 me-3">First Name</label>
+              <div class="flex-grow-1">{{ user_form.first_name }}</div>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+              <label for="id_last_name" class="form-label col-3 me-3">Last Name</label>
+              <div class="flex-grow-1">{{ user_form.last_name }}</div>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+              <label for="id_email" class="form-label col-3 me-3">Email</label>
+              <div class="flex-grow-1">{{ user_form.email }}</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+          </form>
+        </div>
+      </div>
+
+      {% if user.role == "organizer" %}
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h3 class="mb-3">My Organized Events</h3>
+            {% if organized_events %}
+              <ul class="list-group">
+                {% for event in organized_events|dictsort:"event_datetime" %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ event.name }}</strong><br>
+                      <small>{{ event.event_datetime|date:"Y-m-d H:i" }}</small><br>
+                      Seats: {{ event.capacity }} | Available: {{ event.available_seats }}
+                    </div>
+                    <a href="{% url 'events:event-update' event.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">You have no organized events.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="mb-3">My Booked Events</h3>
+          {% if booked_events %}
+            <ul class="list-group">
+              {% for booking in booked_events|dictsort:"event.event_datetime" %}
+                {% with booking.event.event_datetime as event_time %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ booking.event.name }}</strong><br>
+                      <small>{{ event_time|date:"Y-m-d H:i" }}</small><br>
+                      Seats: {{ booking.event.capacity }} | Available: {{ booking.event.available_seats }}
+                    </div>
+                    {% if event_time > now %}
+                      <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal{{ booking.pk }}">
+                        Cancel
+                      </button>
+                      <div class="modal fade" id="confirmCancelModal{{ booking.pk }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Confirm Cancellation</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure you want to cancel booking for '{{ booking.event.name }}'?
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <form method="post" action="{% url 'events:booking-delete' booking.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% else %}
+                      <span class="text-muted">Event Passed</span>
+                    {% endif %}
+                  </li>
+                {% endwith %}
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="text-muted">You have no booked events.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

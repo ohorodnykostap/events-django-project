@@ -1,0 +1,8 @@
+name,description,event_datetime,price,capacity,status,event_type,location,organizer
+Rock Concert,Great rock concert,2026-01-10 19:00,50.00,500,planned,Concert,Arena Lviv,User1
+Python Workshop,Learn Python basics,2026-01-15 10:00,0.00,50,planned,Workshop,Club Picasso,User1
+Tech Conference,Annual tech meetup,2026-02-01 09:00,30.00,300,planned,Conference,Grand Hall,User1
+Marathon,City marathon event,2026-03-20 08:00,0.00,1000,planned,Sport,Open Air Park,User1
+Jazz Night,Evening jazz concert,2026-04-05 20:00,40.00,200,planned,Concert,Blue Club,User1
+Karpaty vs Dynamo Football Match,Ukrainian Championship,2026-06-15 18:00,200.00,5000,planned,Sport,Arena Lviv,User1
+Jazz Concert Lviv,Evening of jazz music,2026-07-10 19:30,150.00,300,planned,Concert,Grand Hall,User1

@@ -1,0 +1,4 @@
+username,email,password,is_superuser,is_staff,role
+Admin,admin@admin.com,admin123,True,True,participant
+User1,user1@user.com,user123,False,False,organizer
+User2,user2@user.com,user123,False,False,participant
