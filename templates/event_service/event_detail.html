@@ -1,40 +1,66 @@
 {% extends "base.html" %}
 
+{% block title %}Event Details{% endblock %}
+
 {% block content %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h2 class="card-title">{{ event.name }}</h2>
-        <p class="card-text">{{ event.description }}</p>
-        <p class="card-text">
-            Type: {{ event.event_type.name }} | Location: {{ event.location.name }}<br>
-            Date: {{ event.event_datetime|date:"Y-m-d H:i" }}<br>
-            Price: ${{ event.price }}<br>
-            Total seats: {{ event.capacity }}<br>
-            Available seats: {{ event.available_seats }}
-        </p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm mb-4">
+        {% if event.image %}
+          <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+        {% endif %}
+        <div class="card-body">
+          <h2 class="card-title mb-3">{{ event.name }}</h2>
+          <p class="card-text">{{ event.description }}</p>
 
-        {% if messages %}
+          <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item">
+              <span class="badge bg-info text-dark">{{ event.event_type.name }}</span>
+              <span class="badge bg-secondary">{{ event.location.name }}</span>
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-calendar-event"></i>
+              {{ event.event_datetime|date:"Y-m-d H:i" }}
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-currency-dollar"></i>
+              {{ event.price }}
+            </li>
+            <li class="list-group-item">
+              <i class="bi bi-people"></i>
+              Total seats: {{ event.capacity }} |
+              Available: {{ event.available_seats }}
+            </li>
+          </ul>
+
+          {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} mt-2">{{ message }}</div>
+              <div class="alert alert-{{ message.tags }} mt-2">{{ message }}</div>
             {% endfor %}
-        {% endif %}
+          {% endif %}
 
-        {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
             {% if event.available_seats > 0 %}
-                <form method="post" action="{% url 'events:booking-create' event.pk %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">
-                        Book Ticket
-                    </button>
-                </form>
+              <form method="post" action="{% url 'events:booking-create' event.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="bi bi-ticket-perforated"></i> Book Ticket
+                </button>
+              </form>
             {% else %}
-                <button class="btn btn-secondary" disabled>No seats available</button>
+              <button class="btn btn-secondary w-100" disabled>
+                <i class="bi bi-x-circle"></i> No seats available
+              </button>
             {% endif %}
-        {% else %}
-            <p class="text-danger">
-                Please <a href="{% url 'events:login' %}">log in</a> to book a ticket.
+          {% else %}
+            <p class="text-danger mt-3">
+              Please <a href="{% url 'events:login' %}">log in</a> to book a ticket.
             </p>
-        {% endif %}
+          {% endif %}
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

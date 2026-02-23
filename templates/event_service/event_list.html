@@ -1,34 +1,47 @@
 {% extends "base.html" %}
 
+{% block title %}Events{% endblock %}
+
 {% block content %}
+<div class="container mt-4">
+  {% include "event_service/event_filter.html" %}
 
-{% include "event_service/event_filter.html" %}
-
-<div class="row">
+  <div class="row">
     {% for event in events %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">{{ event.name }}</h5>
-                <p class="card-text">
-                    {{ event.event_type.name }} | {{ event.location.name }}
-                </p>
-                <p class="card-text">
-                    Date: {{ event.event_datetime|date:"Y-m-d H:i" }}
-                </p>
-                <p class="card-text">
-                    Price: ${{ event.price }}
-                </p>
-                <a href="{% url 'events:event-detail' event.pk %}"
-                   class="btn btn-primary">View</a>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+          <!-- Якщо є картинка для події -->
+          {% if event.image %}
+            <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ event.name }}</h5>
+            <p class="card-text mb-1">
+              <span class="badge bg-info text-dark">{{ event.event_type.name }}</span>
+              <span class="badge bg-secondary">{{ event.location.name }}</span>
+            </p>
+            <p class="card-text mb-1">
+              <i class="bi bi-calendar-event"></i>
+              {{ event.event_datetime|date:"Y-m-d H:i" }}
+            </p>
+            <p class="card-text mb-3">
+              <i class="bi bi-currency-dollar"></i>
+              {{ event.price }}
+            </p>
+            <div class="mt-auto">
+              <a href="{% url 'events:event-detail' event.pk %}" class="btn btn-primary w-100">
+                View Details
+              </a>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
     {% empty %}
-    <p>No events found.</p>
+      <p class="text-muted">No events found.</p>
     {% endfor %}
+  </div>
+
+  {% include "includes/pagination.html" %}
 </div>
-
-{% include "includes/pagination.html" %}
-
 {% endblock %}
