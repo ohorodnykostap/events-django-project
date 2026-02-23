@@ -21,9 +21,12 @@
 
         {% if user.is_authenticated %}
             {% if event.available_seats > 0 %}
-                <a href="{% url 'events:booking-create' event.pk %}" class="btn btn-primary">
-                    Book Ticket
-                </a>
+                <form method="post" action="{% url 'events:booking-create' event.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">
+                        Book Ticket
+                    </button>
+                </form>
             {% else %}
                 <button class="btn btn-secondary" disabled>No seats available</button>
             {% endif %}
@@ -35,4 +38,3 @@
     </div>
 </div>
 {% endblock %}
-

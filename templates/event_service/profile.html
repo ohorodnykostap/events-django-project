@@ -48,7 +48,6 @@
                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal{{ booking.pk }}">
                         Cancel
                     </button>
-
                     <div class="modal fade" id="confirmCancelModal{{ booking.pk }}" tabindex="-1" aria-hidden="true">
                       <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -61,7 +60,11 @@
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <a href="{% url 'events:booking-delete' booking.pk %}" class="btn btn-danger">Yes, Cancel</a>
+                            <form method="post" action="{% url 'events:booking-delete' booking.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                            </form>
+
                           </div>
                         </div>
                       </div>
@@ -78,4 +81,3 @@
 {% endif %}
 
 {% endblock %}
-
